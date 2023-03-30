@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="questionReaderService" class="ru.mikhailov.otus.task1.service.QuestionCSVReader">
+        <constructor-arg index="0" value="questions.csv"/>
+    </bean>
+
+    <bean id="ioService" class="ru.mikhailov.otus.task1.service.ConsoleIOService"/>
+
+    <bean id="quizService" class="ru.mikhailov.otus.task1.service.QuizServiceImpl">
+        <constructor-arg index="0" ref="questionReaderService"/>
+        <constructor-arg index="1" ref="ioService"/>
+    </bean>
+
+</beans>
