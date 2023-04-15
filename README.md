@@ -12,3 +12,7 @@
 ### task-1
 
 Testing application for student. Print questions & answers.
+
+### task-2
+
+Testing application for student. Fully functional with Java + Annotation-based configuration.
