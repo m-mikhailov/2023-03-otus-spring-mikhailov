@@ -3,7 +3,7 @@ package ru.mikhailov.otus.task2.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.mikhailov.otus.task2.domain.QuestionAnswer;
+import ru.mikhailov.otus.task2.domain.Answer;
 import ru.mikhailov.otus.task2.service.io.IOService;
 
 import java.util.ArrayList;
@@ -40,20 +40,21 @@ public class QuizServiceImpl implements QuizService {
 
     }
 
-    private List<QuestionAnswer> printQuestionsAndGetAnswers(List<Long> questionIds) {
-        List<QuestionAnswer> userAnswers = new ArrayList<>(questionIds.size());
+    private List<Answer> printQuestionsAndGetAnswers(List<Long> questionIds) {
+        List<Answer> userAnswers = new ArrayList<>();
 
         for (Long id : questionIds) {
             qaService.printQuestion(id);
             var userInput = ioService.readLineWithPrompt("Enter answer:");
-            userAnswers.add(parseUserInput(id, userInput));
+            userAnswers.addAll(parseUserInput(id, userInput));
         }
         return userAnswers;
     }
 
-    private QuestionAnswer parseUserInput(Long questionId, String userInput) {
-        var values = userInput.split(",|\s");
-        return new QuestionAnswer(questionId, Arrays.stream(values).toList());
+    private List<Answer> parseUserInput(Long questionId, String userInput) {
+        return Arrays.stream(userInput.split(",|\s"))
+                .map(answer -> new Answer(questionId, answer))
+                .toList();
     }
 
 

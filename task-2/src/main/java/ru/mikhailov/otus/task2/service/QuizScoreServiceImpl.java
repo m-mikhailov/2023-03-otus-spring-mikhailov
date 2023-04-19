@@ -1,48 +1,43 @@
 package ru.mikhailov.otus.task2.service;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.mikhailov.otus.task2.config.properties.ApplicationProperties;
-import ru.mikhailov.otus.task2.domain.QuestionAnswer;
+import ru.mikhailov.otus.task2.config.properties.QuizPropertiesProvider;
+import ru.mikhailov.otus.task2.domain.Answer;
+import ru.mikhailov.otus.task2.domain.Question;
 import ru.mikhailov.otus.task2.domain.Student;
+import ru.mikhailov.otus.task2.service.dao.CsvDaoService;
 import ru.mikhailov.otus.task2.service.io.IOService;
-import ru.mikhailov.otus.task2.service.reader.CsvReaderService;
 
 import java.util.List;
 
 @Service
 public class QuizScoreServiceImpl implements QuizScoreService {
 
-    private final ApplicationProperties properties;
+    private final QuizPropertiesProvider properties;
 
-    private final List<QuestionAnswer> correctAnswers;
+    private final List<Answer> correctAnswers;
 
     private final IOService ioService;
 
     public QuizScoreServiceImpl(
-            @Qualifier("correctAnswerReaderService") CsvReaderService<QuestionAnswer> reader,
-            ApplicationProperties properties,
+            CsvDaoService<Question> questionDao,
+            QuizPropertiesProvider properties,
             IOService ioService
     ) {
-        this.correctAnswers = reader.readFile();
+        this.correctAnswers = questionDao.getAll()
+                .stream()
+                .flatMap(question -> question.correctAnswers().stream())
+                .toList();
         this.properties = properties;
         this.ioService = ioService;
     }
 
     @Override
-    public int calculate(List<QuestionAnswer> answers) {
+    public int calculate(List<Answer> answers) {
         var obtained = answers.stream()
-                .filter(this::containsAnswer)
+                .filter(correctAnswers::contains)
                 .count();
         return (int) obtained * 100 / correctAnswers.size();
-    }
-
-    private boolean containsAnswer(QuestionAnswer answer) {
-        return correctAnswers.stream()
-                .filter(ca -> ca.questionId().equals(answer.questionId()))
-                .findFirst()
-                .filter(ca -> ca.answers().containsAll(answer.answers()))
-                .isPresent();
     }
 
     @Override

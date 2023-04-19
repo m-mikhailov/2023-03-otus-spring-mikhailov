@@ -1,4 +1,4 @@
-package ru.mikhailov.otus.task2.service.reader.util;
+package ru.mikhailov.otus.task2.service.dao.util;
 
 import org.springframework.core.io.ClassPathResource;
 

@@ -14,24 +14,18 @@ public class QuestionAnswerServiceImpl implements QuestionAnswerService {
 
     private final IOService ioService;
 
-    private final QuestionDaoService questionDao;
-
-    private final AnswerDaoService answerDao;
+    private final QuestionService questionService;
 
     @Override
     public List<Long> getQuestionIds() {
-        return questionDao.getIds();
+        return questionService.getIds();
     }
 
     @Override
     public void printQuestion(Long questionId) {
-        var question = questionDao.getById(questionId);
-        var answerOpt = answerDao.getById(questionId);
+        var question = questionService.getById(questionId);
         ioService.printLine(converter.convertQuestionToString(question));
-        answerOpt.ifPresentOrElse(answer ->
-                        ioService.printLine(converter.convertAnswerToString(answer)),
-                () -> ioService.printLine("")
-        );
+        ioService.printLine(converter.convertAnswersToString(question.answers()));
     }
 
 }

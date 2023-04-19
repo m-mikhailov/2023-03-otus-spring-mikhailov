@@ -8,8 +8,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.mikhailov.otus.task2.domain.TestData;
 import ru.mikhailov.otus.task2.domain.error.QuestionNotFoundException;
-import ru.mikhailov.otus.task2.service.QuestionDaoServiceImpl;
-import ru.mikhailov.otus.task2.service.reader.CsvQuestionReaderService;
+import ru.mikhailov.otus.task2.service.QuestionServiceImpl;
+import ru.mikhailov.otus.task2.service.dao.CsvQuestionDaoService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -20,17 +20,17 @@ import static org.mockito.Mockito.when;
 public class QuestionDaoServiceTest {
 
     @Mock
-    private CsvQuestionReaderService questionReaderService;
+    private CsvQuestionDaoService questionReaderService;
 
     @BeforeEach
     public void init() {
-        when(questionReaderService.readFile()).thenReturn(TestData.QUESTIONS_CSV_DATA);
+        when(questionReaderService.getAll()).thenReturn(TestData.QUESTIONS_CSV_DATA);
     }
 
     @DisplayName("Should return all ids")
     @Test
     public void shouldReturnIds() {
-        QuestionDaoServiceImpl service = new QuestionDaoServiceImpl(questionReaderService);
+        QuestionServiceImpl service = new QuestionServiceImpl(questionReaderService);
         var ids = service.getIds();
         assertEquals(3, ids.size());
     }
@@ -38,7 +38,7 @@ public class QuestionDaoServiceTest {
     @DisplayName("Should return question by id")
     @Test
     public void shouldReturnQuestionById() {
-        QuestionDaoServiceImpl service = new QuestionDaoServiceImpl(questionReaderService);
+        QuestionServiceImpl service = new QuestionServiceImpl(questionReaderService);
         var actual = service.getById(2L);
         assertEquals(TestData.QUESTION_2, actual);
     }
@@ -46,7 +46,7 @@ public class QuestionDaoServiceTest {
     @DisplayName("Should throw QuestionNotFoundException")
     @Test
     public void shouldThrowException() {
-        QuestionDaoServiceImpl service = new QuestionDaoServiceImpl(questionReaderService);
+        QuestionServiceImpl service = new QuestionServiceImpl(questionReaderService);
         Throwable ex = assertThrows(QuestionNotFoundException.class, () -> service.getById(4L));
         assertEquals("Question with ID 4 not found.", ex.getMessage());
     }

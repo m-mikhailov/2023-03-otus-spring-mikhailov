@@ -1,5 +1,5 @@
-1;first question
-2;second question
-3;third question
-4;fourth question
-5;fifth question
+1;first question;1,2;a
+2;second question;1,2,3;a,c
+3;third question;1,2,3,4;a,b,c
+4;fourth question;;yes
+5;fifth question;;no

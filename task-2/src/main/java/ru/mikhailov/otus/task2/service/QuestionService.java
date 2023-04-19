@@ -4,7 +4,7 @@ import ru.mikhailov.otus.task2.domain.Question;
 
 import java.util.List;
 
-public interface QuestionDaoService {
+public interface QuestionService {
 
     List<Long> getIds();
 

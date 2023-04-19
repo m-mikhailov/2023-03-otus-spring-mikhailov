@@ -3,17 +3,17 @@ package ru.mikhailov.otus.task2.service;
 import org.springframework.stereotype.Service;
 import ru.mikhailov.otus.task2.domain.Question;
 import ru.mikhailov.otus.task2.domain.error.QuestionNotFoundException;
-import ru.mikhailov.otus.task2.service.reader.CsvReaderService;
+import ru.mikhailov.otus.task2.service.dao.CsvDaoService;
 
 import java.util.List;
 
 @Service
-public class QuestionDaoServiceImpl implements QuestionDaoService {
+public class QuestionServiceImpl implements QuestionService {
 
     private final List<Question> questions;
 
-    public QuestionDaoServiceImpl(CsvReaderService<Question> reader) {
-        this.questions = reader.readFile();
+    public QuestionServiceImpl(CsvDaoService<Question> questionDao) {
+        this.questions = questionDao.getAll();
     }
 
     @Override

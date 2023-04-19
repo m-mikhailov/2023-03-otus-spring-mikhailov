@@ -12,18 +12,12 @@ import org.springframework.context.annotation.PropertySource;
 @Setter
 @Accessors(fluent = true)
 @PropertySource("classpath:application.properties")
-public class ApplicationProperties {
+public class ApplicationProperties implements ResourceProvider, QuizPropertiesProvider {
 
     @Value("${csv.questions.file-name}")
-    private String csvQuestionFile;
+    private String fileName;
 
-    @Value("${csv.question-answers.file-name}")
-    private String csvQuestionAnswersFile;
-
-    @Value("${csv.correct-answers.file-name}")
-    private String csvCorrectAnswersFile;
-
-    @Value("${minimal-score}")
+    @Value("${quiz.minimal-score}")
     private int minimalScore;
 
 }
