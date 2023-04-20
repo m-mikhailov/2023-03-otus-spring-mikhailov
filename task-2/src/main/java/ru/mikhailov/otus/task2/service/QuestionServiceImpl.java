@@ -1,5 +1,6 @@
 package ru.mikhailov.otus.task2.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.mikhailov.otus.task2.domain.Question;
 import ru.mikhailov.otus.task2.domain.error.QuestionNotFoundException;
@@ -8,22 +9,19 @@ import ru.mikhailov.otus.task2.service.dao.CsvDaoService;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
 
-    private final List<Question> questions;
-
-    public QuestionServiceImpl(CsvDaoService<Question> questionDao) {
-        this.questions = questionDao.getAll();
-    }
+    private final CsvDaoService<Question> questionDao;
 
     @Override
     public List<Long> getIds() {
-        return questions.stream().map(Question::id).toList();
+        return questionDao.getAll().stream().map(Question::id).toList();
     }
 
     @Override
     public Question getById(Long id) {
-        return questions.stream()
+        return questionDao.getAll().stream()
                 .filter(question -> question.id().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new QuestionNotFoundException(id));
