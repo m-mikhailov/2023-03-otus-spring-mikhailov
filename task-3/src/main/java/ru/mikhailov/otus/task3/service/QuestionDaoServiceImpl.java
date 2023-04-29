@@ -35,10 +35,10 @@ public class QuestionDaoServiceImpl implements QuestionDaoService {
 
     @Override
     public List<Question> getAll() {
-        return read(resourceProvider.getFileName(), this::parseQuestions);
+        return readCsvFile(resourceProvider.getFileName(), this::parseQuestions);
     }
 
-    private List<Question> read(String fileName, Function<BufferedReader, List<Question>> func) {
+    private List<Question> readCsvFile(String fileName, Function<BufferedReader, List<Question>> func) {
         ClassPathResource resource = new ClassPathResource(fileName);
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(resource.getInputStream()))
