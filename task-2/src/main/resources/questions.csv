@@ -1,0 +1,5 @@
+1;Select all the core concepts of OOPS;Abstraction,Inheritance,Interface,Polymorphism,Generics;a,b,d
+2;Which of the below are reserved keyword in Java?;array,goto,null,int;b,d
+3;Which of the below are unchecked exceptions in Java?;RuntimeException,ClassCastException,NullPointerException,IOException;a,b,c
+4;Can we have two main methods in a java class?;;yes
+5;Does garbage collection guarantee that a program will not run out of memory?;;no
