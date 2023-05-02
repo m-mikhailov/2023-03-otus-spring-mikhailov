@@ -11,10 +11,16 @@ public class StudentServiceImpl implements StudentService {
 
     private final IOService ioService;
 
+    private final LocalizedService localizedService;
+
     @Override
     public Student introduce() {
-        var studentFirstName = ioService.readLineWithLocalePrompt("student.first-name");
-        var studentSecondName = ioService.readLineWithLocalePrompt("student.second-name");
+        var studentFirstName = ioService.readLineWithPrompt(
+                localizedService.getMessage("student.first-name")
+        );
+        var studentSecondName = ioService.readLineWithPrompt(
+                localizedService.getMessage("student.second-name")
+        );
 
         return new Student(studentFirstName, studentSecondName);
     }

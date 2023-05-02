@@ -21,6 +21,8 @@ public class QuizScoreServiceImpl implements QuizScoreService {
 
     private final IOService ioService;
 
+    private final LocalizedService localizedService;
+
     @Override
     public int calculate(List<Answer> answers) {
         var correctAnswers = getCorrectAnswers();
@@ -42,9 +44,13 @@ public class QuizScoreServiceImpl implements QuizScoreService {
     @Override
     public void printResult(Student student, int score) {
         if (score > propertiesProvider.getMinimalScore()) {
-            ioService.printLocaleLine("result.good", student.firstName(), student.secondName(), score);
+            ioService.printLine(
+                    localizedService.getMessage("result.good", student.firstName(), student.secondName(), score)
+            );
         } else {
-            ioService.printLocaleLine("result.bad", propertiesProvider.getMinimalScore(), score);
+            ioService.printLine(
+                    localizedService.getMessage("result.bad", propertiesProvider.getMinimalScore(), score)
+            );
         }
     }
 

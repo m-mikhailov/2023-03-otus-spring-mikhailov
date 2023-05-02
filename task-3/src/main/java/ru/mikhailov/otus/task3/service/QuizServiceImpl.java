@@ -23,16 +23,18 @@ public class QuizServiceImpl implements QuizService {
 
     private final IOService ioService;
 
+    private final LocalizedService localizedService;
+
     @Override
     public void start() {
 
         var student = studentService.introduce();
 
-        ioService.printLocaleLine("quiz.start");
+        ioService.printLine(localizedService.getMessage("quiz.start"));
 
         var studentAnswers = printQuestionsAndGetAnswers();
 
-        ioService.printLocaleLine("quiz.end");
+        ioService.printLine(localizedService.getMessage("quiz.end"));
 
         var score = scoreService.calculate(studentAnswers);
 
@@ -45,7 +47,7 @@ public class QuizServiceImpl implements QuizService {
         var userAnswers = new ArrayList<Answer>();
         for (Question question : questions) {
             questionService.print(question);
-            var userInput = ioService.readLineWithLocalePrompt("enter.answer");
+            var userInput = ioService.readLineWithPrompt(localizedService.getMessage("enter.answer"));
             userAnswers.addAll(parseUserInput(question.id(), userInput));
         }
         return userAnswers;

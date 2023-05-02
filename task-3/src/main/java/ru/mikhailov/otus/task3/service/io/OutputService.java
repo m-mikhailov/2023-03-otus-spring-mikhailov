@@ -4,8 +4,4 @@ public interface OutputService {
 
     void printLine(String line);
 
-    void printLocaleLine(String code);
-
-    void printLocaleLine(String code, Object... args);
-
 }

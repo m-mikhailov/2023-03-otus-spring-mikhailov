@@ -4,6 +4,4 @@ public interface InputService {
 
     String readLineWithPrompt(String prompt);
 
-    String readLineWithLocalePrompt(String code);
-
 }
