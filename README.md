@@ -20,3 +20,7 @@ Testing application for student. Fully functional with Java + Annotation-based c
 ### task-3
 
 Testing application for student. Fully functional with Spring Boot.
+
+### task-4
+
+Testing application for student. Fully functional with Spring Boot & Spring Shell.
