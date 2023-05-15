@@ -1,0 +1,9 @@
+quiz:
+  file-name: questions_ru.csv
+  minimal-score: 75
+  locale: ru_RU
+
+spring:
+  messages:
+    basename: "i18n/appmessages"
+    encoding: "UTF-8"
