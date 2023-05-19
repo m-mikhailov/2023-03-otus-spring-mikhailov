@@ -1,12 +1,12 @@
 package ru.mikhailov.otus.task5.converter;
 
 import org.springframework.stereotype.Component;
-import ru.mikhailov.otus.task5.domain.model.Genre;
+import ru.mikhailov.otus.task5.domain.model.Author;
 
 @Component
-public class GenreToStringConverter implements ModelConverter<Genre> {
+public class AuthorModelConverter implements ModelConverter<Author> {
     @Override
-    public String modelToString(Genre model) {
+    public String modelToString(Author model) {
         return "%s. %s".formatted(model.getId(), model.getName());
     }
 }

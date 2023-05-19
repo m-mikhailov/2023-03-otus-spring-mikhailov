@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.mikhailov.otus.task5.domain.model.Book;
 
 @Component
-public class BookToStringConverter implements ModelConverter<Book> {
+public class BookModelConverter implements ModelConverter<Book> {
     @Override
     public String modelToString(Book model) {
         return "%s. Название: %s. Автор: %s. Жанр: %s.".formatted(
