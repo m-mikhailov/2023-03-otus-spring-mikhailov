@@ -15,7 +15,7 @@ import ru.mikhailov.otus.task5.domain.model.Genre;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Book service tests")
-@SpringBootTest(properties = "spring.shell.interactive.enabled=false")
+@SpringBootTest
 @Transactional
 public class BookServiceTests {
 
