@@ -8,4 +8,6 @@ public interface CommentRepository {
 
     void deleteById(Long id);
 
+    Comment save(Comment comment);
+
 }

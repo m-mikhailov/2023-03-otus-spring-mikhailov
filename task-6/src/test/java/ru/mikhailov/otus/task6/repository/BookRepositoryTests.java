@@ -51,8 +51,8 @@ public class BookRepositoryTests {
         );
 
         assertThat(actualBook)
-                .isNotNull()
-                .isEqualTo(expectedBook);
+                .isPresent()
+                .contains(expectedBook);
     }
 
     @DisplayName("Should save new book")
@@ -111,29 +111,6 @@ public class BookRepositoryTests {
 
         assertThat(booksAfter)
                 .isEqualTo(0L);
-    }
-
-    @DisplayName("Should create new book comment")
-    @Test
-    public void shouldCreateNewBookComment() {
-
-        var newComment = new Comment(
-                null,
-                "Отличный роман!",
-                new Book(1L, null, null, null)
-        );
-
-        var savedComment = repository.createComment(newComment);
-
-        em.clear();
-
-        var actualComment = em.getEntityManager().createQuery(
-                "select c from Comment c where c.id = :id", Comment.class
-        ).setParameter("id", savedComment.getId()).getSingleResult();
-
-        assertThat(actualComment)
-                .isNotNull()
-                .usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(newComment);
     }
 
     @DisplayName("Should return all book comments")

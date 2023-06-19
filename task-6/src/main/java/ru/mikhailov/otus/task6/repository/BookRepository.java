@@ -5,12 +5,13 @@ import ru.mikhailov.otus.task6.domain.model.Book;
 import ru.mikhailov.otus.task6.domain.model.Comment;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BookRepository {
 
     Book save(Book book);
 
-    Book findById(Long id);
+    Optional<Book> findById(Long id);
 
     List<Book> findAll();
 
@@ -19,7 +20,5 @@ public interface BookRepository {
     void deleteById(Long id);
 
     List<Comment> getBookCommentsById(Long bookId);
-
-    Comment createComment(Comment comment);
 
 }

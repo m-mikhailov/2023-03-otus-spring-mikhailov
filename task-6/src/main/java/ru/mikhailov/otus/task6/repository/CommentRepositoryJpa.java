@@ -4,8 +4,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.mikhailov.otus.task6.domain.model.Comment;
+
+import java.util.Objects;
 
 @Repository
 @RequiredArgsConstructor
@@ -14,7 +15,16 @@ public class CommentRepositoryJpa implements CommentRepository {
     private final EntityManager em;
 
     @Override
-    @Transactional
+    public Comment save(Comment comment) {
+        if (Objects.isNull(comment.getId())) {
+            em.persist(comment);
+            return comment;
+        } else {
+            return em.merge(comment);
+        }
+    }
+
+    @Override
     public void update(Comment comment) {
         Query query = em.createQuery(
                 "update Comment c set c.text = :text where c.id = :id"
@@ -25,7 +35,6 @@ public class CommentRepositoryJpa implements CommentRepository {
     }
 
     @Override
-    @Transactional
     public void deleteById(Long id) {
         Query query = em.createQuery(
                 "delete from Comment c where c.id = :id"

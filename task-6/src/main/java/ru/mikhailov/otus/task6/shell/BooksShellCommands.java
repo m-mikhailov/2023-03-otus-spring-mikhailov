@@ -40,9 +40,9 @@ public class BooksShellCommands {
     ) {
         var bookDto = new BookDto(name, authorId, genreId);
 
-        var savedAuthor = bookService.save(bookDto);
+        var savedBook = bookService.save(bookDto);
 
-        return bookModelConverter.modelToString(savedAuthor);
+        return bookModelConverter.modelToString(savedBook);
     }
 
     @ShellMethod(value = "Update book", key = "books update")
@@ -73,13 +73,5 @@ public class BooksShellCommands {
         }
         return commentModelConverter.modelToString(comments);
     }
-
-    @ShellMethod(value = "Create new book comment", key = "book add comment")
-    public void createBookComment(@ShellOption(value = "book-id") Long bookId, String text) {
-        var newComment = new Comment(null, text, new Book(bookId, null, null, null));
-
-        bookService.createBookComment(newComment);
-    }
-
 
 }

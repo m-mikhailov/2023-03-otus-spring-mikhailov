@@ -20,6 +20,4 @@ public interface BookService {
 
     List<Comment> getBookComments(Long id);
 
-    void createBookComment(Comment comment);
-
 }

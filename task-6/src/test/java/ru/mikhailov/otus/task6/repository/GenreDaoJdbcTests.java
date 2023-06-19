@@ -42,8 +42,8 @@ public class GenreDaoJdbcTests {
         var expectedGenre = new Genre(EXISTING_GENRE_ID, EXISTING_GENRE_NAME);
 
         assertThat(actualGenre)
-                .isNotNull()
-                .usingRecursiveComparison().isEqualTo(expectedGenre);
+                .isPresent()
+                .contains(expectedGenre);
     }
 
     @DisplayName("Should save new genre")

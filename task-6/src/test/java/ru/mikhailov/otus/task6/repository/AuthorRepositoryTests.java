@@ -42,8 +42,8 @@ public class AuthorRepositoryTests {
         var expectedAuthor = new Author(EXISTING_AUTHOR_ID, EXISTING_AUTHOR_NAME);
 
         assertThat(actualAuthor)
-                .isNotNull()
-                .usingRecursiveComparison().isEqualTo(expectedAuthor);
+                .isPresent()
+                .contains(expectedAuthor);
     }
 
     @DisplayName("Should save new author")

@@ -12,6 +12,12 @@ import org.hibernate.annotations.FetchMode;
 @Table(name = "books")
 @NoArgsConstructor
 @AllArgsConstructor
+@NamedEntityGraph(
+        name = "book-entity-graph",
+        attributeNodes = {
+                @NamedAttributeNode("author"),
+                @NamedAttributeNode("genre")
+        })
 public class Book {
 
     @Id
@@ -20,12 +26,10 @@ public class Book {
 
     private String name;
 
-    @Fetch(FetchMode.JOIN)
     @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private Author author;
 
-    @Fetch(FetchMode.JOIN)
     @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JoinColumn(name = "genre_id")
     private Genre genre;

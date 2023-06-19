@@ -26,6 +26,29 @@ public class CommentRepositoryTests {
     @Autowired
     private TestEntityManager em;
 
+    @DisplayName("Should create new book comment")
+    @Test
+    public void shouldCreateNewBookComment() {
+
+        var newComment = new Comment(
+                null,
+                "Отличный роман!",
+                new Book(1L, null, null, null)
+        );
+
+        var savedComment = repository.save(newComment);
+
+        em.clear();
+
+        var actualComment = em.getEntityManager().createQuery(
+                "select c from Comment c where c.id = :id", Comment.class
+        ).setParameter("id", savedComment.getId()).getSingleResult();
+
+        assertThat(actualComment)
+                .isNotNull()
+                .usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(newComment);
+    }
+
     @DisplayName("Should update comment")
     @Test
     public void shouldUpdateComment() {
