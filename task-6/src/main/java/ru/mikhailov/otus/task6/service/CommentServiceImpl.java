@@ -8,6 +8,8 @@ import ru.mikhailov.otus.task6.domain.model.Book;
 import ru.mikhailov.otus.task6.domain.model.Comment;
 import ru.mikhailov.otus.task6.repository.CommentRepository;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
@@ -32,4 +34,11 @@ public class CommentServiceImpl implements CommentService {
         var newComment = new Comment(null, comment.text(), new Book(comment.bookId(), null, null, null));
         return repository.save(newComment);
     }
+
+    @Override
+    @Transactional
+    public List<Comment> findAllByBookId(Long bookId) {
+        return repository.findAllByBookId(bookId);
+    }
+
 }

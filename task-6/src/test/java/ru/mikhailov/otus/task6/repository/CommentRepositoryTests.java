@@ -94,4 +94,23 @@ public class CommentRepositoryTests {
                 .isNotPresent();
     }
 
+    @DisplayName("Should return all book comments")
+    @Test
+    public void shouldReturnAllCommetsByBookId() {
+        em.persist(new Comment(null, "Отличный роман!", new Book(1L, null, null, null)));
+        em.persist(new Comment(null, "Рекомендую всем!" , new Book(1L, null, null, null)));
+
+        Long commentsCount = (Long) em.getEntityManager().createQuery(
+                        "select count(c) from Comment c where c.book.id = :book_id"
+                )
+                .setParameter("book_id", EXISTING_BOOK_ID)
+                .getSingleResult();
+
+        var actualComments = repository.findAllByBookId(EXISTING_BOOK_ID);
+
+        assertThat(actualComments)
+                .isNotEmpty()
+                .hasSize(commentsCount.intValue());
+    }
+
 }

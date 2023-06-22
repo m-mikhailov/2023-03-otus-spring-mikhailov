@@ -1,14 +1,17 @@
 package ru.mikhailov.otus.task6.shell;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.mikhailov.otus.task6.converter.ModelConverter;
 import ru.mikhailov.otus.task6.domain.dto.BookDto;
+import ru.mikhailov.otus.task6.domain.dto.BookEntityDto;
 import ru.mikhailov.otus.task6.domain.model.Book;
 import ru.mikhailov.otus.task6.domain.model.Comment;
 import ru.mikhailov.otus.task6.service.BookService;
+import ru.mikhailov.otus.task6.service.CommentService;
 
 @ShellComponent
 @RequiredArgsConstructor
@@ -20,7 +23,9 @@ public class BooksShellCommands {
 
     private final BookService bookService;
 
-    private final ModelConverter<Book> bookModelConverter;
+    private final CommentService commentService;
+
+    private final ModelConverter<BookEntityDto> bookModelConverter;
     private final ModelConverter<Comment> commentModelConverter;
 
     @ShellMethod("Show books")
@@ -34,11 +39,11 @@ public class BooksShellCommands {
 
     @ShellMethod(value = "Create new book", key = "books create")
     public String createBook(
-            String name,
+            @NotEmpty String name,
             @ShellOption(value = "author-id") Long authorId,
             @ShellOption(value = "genre-id") Long genreId
     ) {
-        var bookDto = new BookDto(name, authorId, genreId);
+        var bookDto = new BookDto(null, name, authorId, genreId);
 
         var savedBook = bookService.save(bookDto);
 
@@ -53,11 +58,12 @@ public class BooksShellCommands {
             @ShellOption(defaultValue = DEFAULT_ID, value = "genre-id") Long genreId
     ) {
         var bookDto = new BookDto(
+                id,
                 name.equals(DEFAULT_VALUE) ? null : name,
                 authorId == 0 ? null : authorId,
                 genreId == 0 ? null : genreId);
 
-        bookService.updateById(id, bookDto);
+        bookService.update(bookDto);
     }
 
     @ShellMethod(value = "Delete book", key = "books delete")
@@ -66,8 +72,8 @@ public class BooksShellCommands {
     }
 
     @ShellMethod(value = "Show book comments", key = "book comments")
-    public String showBookComments(@ShellOption(value = "book-id") Long bookId) {
-        var comments = bookService.getBookComments(bookId);
+    public String showBookComments(Long id) {
+        var comments = commentService.findAllByBookId(id);
         if (comments.isEmpty()) {
             return "Здесь пока ничего нет :(";
         }

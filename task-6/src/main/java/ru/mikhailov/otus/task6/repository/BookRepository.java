@@ -19,6 +19,4 @@ public interface BookRepository {
 
     void deleteById(Long id);
 
-    List<Comment> getBookCommentsById(Long bookId);
-
 }

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.mikhailov.otus.task6.domain.model.Comment;
 
+import java.util.List;
 import java.util.Objects;
 
 @Repository
@@ -41,5 +42,16 @@ public class CommentRepositoryJpa implements CommentRepository {
         );
         query.setParameter("id", id);
         query.executeUpdate();
+    }
+
+    @Override
+    public List<Comment> findAllByBookId(Long bookId) {
+        return em.createQuery(
+                        "select c from Comment c " +
+                                "where c.book.id = :book_id",
+                        Comment.class
+                )
+                .setParameter("book_id", bookId)
+                .getResultList();
     }
 }

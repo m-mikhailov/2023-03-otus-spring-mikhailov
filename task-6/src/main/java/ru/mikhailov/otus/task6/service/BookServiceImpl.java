@@ -3,11 +3,11 @@ package ru.mikhailov.otus.task6.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.mikhailov.otus.task6.domain.error.EntityNotFoundException;
-import ru.mikhailov.otus.task6.domain.model.Comment;
-import ru.mikhailov.otus.task6.repository.BookRepository;
 import ru.mikhailov.otus.task6.domain.dto.BookDto;
+import ru.mikhailov.otus.task6.domain.dto.BookEntityDto;
+import ru.mikhailov.otus.task6.domain.error.EntityNotFoundException;
 import ru.mikhailov.otus.task6.domain.model.Book;
+import ru.mikhailov.otus.task6.repository.BookRepository;
 
 import java.util.List;
 import java.util.Objects;
@@ -24,23 +24,31 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public Book save(BookDto book) {
+    public BookEntityDto save(BookDto book) {
         var author = authorService.findById(book.authorId());
         var genre = genreService.findById(book.genreId());
         var newBook = new Book(
-                null,
+                book.id(),
                 book.name(),
                 author,
                 genre
         );
 
-        return bookRepository.save(newBook);
+        var savedBook = bookRepository.save(newBook);
+
+        return new BookEntityDto(savedBook);
     }
 
     @Override
     @Transactional
-    public void updateById(Long id, BookDto book) {
-        var newBook = findById(id);
+    public void update(BookDto book) {
+        var existingBook = findById(book.id());
+        var newBook = new Book(
+                existingBook.id(),
+                existingBook.name(),
+                existingBook.author(),
+                existingBook.genre()
+        );
 
         if (Objects.nonNull(book.name())) {
             newBook.setName(book.name());
@@ -62,27 +70,24 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional(readOnly = true)
-    public Book findById(Long id) {
-        return bookRepository.findById(id)
+    public BookEntityDto findById(Long id) {
+        var book = bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Book with id %s not found".formatted(id)));
+        return new BookEntityDto(book);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Book> findAll() {
-        return bookRepository.findAll();
+    public List<BookEntityDto> findAll() {
+        return bookRepository.findAll().stream()
+                .map(BookEntityDto::new)
+                .toList();
     }
 
     @Override
     @Transactional
     public void deleteById(Long id) {
         bookRepository.deleteById(id);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Comment> getBookComments(Long id) {
-        return bookRepository.getBookCommentsById(id);
     }
 
 }

@@ -7,7 +7,6 @@ import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.mikhailov.otus.task6.domain.model.Book;
-import ru.mikhailov.otus.task6.domain.model.Comment;
 
 import java.util.List;
 import java.util.Map;
@@ -69,20 +68,6 @@ public class BookRepositoryJpa implements BookRepository {
         );
         query.setParameter("id", id);
         query.executeUpdate();
-    }
-
-    @Override
-    public List<Comment> getBookCommentsById(Long bookId) {
-        return em.createQuery(
-                        "select c from Comment c " +
-                                "join fetch c.book " +
-                                "join fetch c.book.author " +
-                                "join fetch c.book.genre " +
-                                "where c.book.id = :book_id",
-                        Comment.class
-                )
-                .setParameter("book_id", bookId)
-                .getResultList();
     }
 
 }
