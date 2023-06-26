@@ -28,3 +28,7 @@ Testing application for student. Fully functional with Spring Boot & Spring Shel
 ### task-5
 
 Books library. Using Spring JDBC.
+
+### task-6
+
+Books library. Using Spring JPA.
