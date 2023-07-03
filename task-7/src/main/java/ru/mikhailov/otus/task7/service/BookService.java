@@ -1,20 +1,21 @@
 package ru.mikhailov.otus.task7.service;
 
 
+import ru.mikhailov.otus.task7.domain.dto.BookCreateDto;
 import ru.mikhailov.otus.task7.domain.dto.BookDto;
-import ru.mikhailov.otus.task7.domain.dto.BookEntityDto;
+import ru.mikhailov.otus.task7.domain.dto.BookUpdateDto;
 
 import java.util.List;
 
 public interface BookService {
 
-    BookEntityDto save(BookDto book);
+    BookDto save(BookCreateDto book);
 
-    void update(BookDto bookDto);
+    void update(BookUpdateDto bookDto);
 
-    BookEntityDto findById(Long id);
+    BookDto findById(Long id);
 
-    List<BookEntityDto> findAll();
+    List<BookDto> findAll();
 
     void deleteById(Long id);
 

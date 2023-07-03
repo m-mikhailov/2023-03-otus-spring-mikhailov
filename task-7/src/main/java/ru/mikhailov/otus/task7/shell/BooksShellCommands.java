@@ -6,9 +6,10 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.mikhailov.otus.task7.converter.ModelConverter;
+import ru.mikhailov.otus.task7.domain.dto.BookCreateDto;
 import ru.mikhailov.otus.task7.domain.dto.BookDto;
-import ru.mikhailov.otus.task7.domain.dto.BookEntityDto;
-import ru.mikhailov.otus.task7.domain.model.Comment;
+import ru.mikhailov.otus.task7.domain.dto.BookUpdateDto;
+import ru.mikhailov.otus.task7.domain.dto.CommentDto;
 import ru.mikhailov.otus.task7.service.BookService;
 import ru.mikhailov.otus.task7.service.CommentService;
 
@@ -24,8 +25,8 @@ public class BooksShellCommands {
 
     private final CommentService commentService;
 
-    private final ModelConverter<BookEntityDto> bookModelConverter;
-    private final ModelConverter<Comment> commentModelConverter;
+    private final ModelConverter<BookDto> bookModelConverter;
+    private final ModelConverter<CommentDto> commentModelConverter;
 
     @ShellMethod("Show books")
     public String books(@ShellOption(defaultValue = "0") Long id) {
@@ -42,7 +43,7 @@ public class BooksShellCommands {
             @ShellOption(value = "author-id") Long authorId,
             @ShellOption(value = "genre-id") Long genreId
     ) {
-        var bookDto = new BookDto(null, name, authorId, genreId);
+        var bookDto = new BookCreateDto(name, authorId, genreId);
 
         var savedBook = bookService.save(bookDto);
 
@@ -56,7 +57,7 @@ public class BooksShellCommands {
             @ShellOption(defaultValue = DEFAULT_ID, value = "author-id") Long authorId,
             @ShellOption(defaultValue = DEFAULT_ID, value = "genre-id") Long genreId
     ) {
-        var bookDto = new BookDto(
+        var bookDto = new BookUpdateDto(
                 id,
                 name.equals(DEFAULT_VALUE) ? null : name,
                 authorId == 0 ? null : authorId,

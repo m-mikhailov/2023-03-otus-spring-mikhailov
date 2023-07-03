@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
-import ru.mikhailov.otus.task7.domain.dto.CommentDto;
-import ru.mikhailov.otus.task7.domain.model.Comment;
+import ru.mikhailov.otus.task7.domain.dto.CommentCreateDto;
+import ru.mikhailov.otus.task7.domain.dto.CommentUpdateDto;
 import ru.mikhailov.otus.task7.service.CommentService;
 
 @ShellComponent
@@ -16,7 +16,7 @@ public class CommentsShellCommands {
 
     @ShellMethod(value = "Update comment", key = "comments update")
     public void updateComment(Long id, String text) {
-        var commentUpdate = new Comment(id, text, null);
+        var commentUpdate = new CommentUpdateDto(id, text);
 
         service.update(commentUpdate);
     }
@@ -28,7 +28,7 @@ public class CommentsShellCommands {
 
     @ShellMethod(value = "Add new book comment", key = "comments add")
     public void addNewComment(@ShellOption(value = "book-id") Long bookId, String text) {
-        var newComment = new CommentDto(text, bookId);
+        var newComment = new CommentCreateDto(text, bookId);
 
         service.add(newComment);
     }

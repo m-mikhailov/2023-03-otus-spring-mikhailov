@@ -1,16 +1,16 @@
 package ru.mikhailov.otus.task7.service;
 
+import ru.mikhailov.otus.task7.domain.dto.GenreCreateDto;
 import ru.mikhailov.otus.task7.domain.dto.GenreDto;
-import ru.mikhailov.otus.task7.domain.model.Genre;
 
 import java.util.List;
 
 public interface GenreService {
 
-    Genre save(GenreDto genre);
+    GenreDto save(GenreCreateDto genre);
 
-    Genre findById(Long id);
+    GenreDto findById(Long id);
 
-    List<Genre> findAll();
+    List<GenreDto> findAll();
 
 }

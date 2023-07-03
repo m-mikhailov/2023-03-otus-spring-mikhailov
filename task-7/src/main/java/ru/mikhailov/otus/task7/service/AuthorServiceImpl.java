@@ -3,6 +3,7 @@ package ru.mikhailov.otus.task7.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.mikhailov.otus.task7.domain.dto.AuthorCreateDto;
 import ru.mikhailov.otus.task7.domain.dto.AuthorDto;
 import ru.mikhailov.otus.task7.domain.error.EntityNotFoundException;
 import ru.mikhailov.otus.task7.domain.model.Author;
@@ -18,21 +19,25 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional
-    public Author create(AuthorDto author) {
-        var newAuthor = new Author(null, author.name());
-        return repository.save(newAuthor);
+    public AuthorDto create(AuthorCreateDto author) {
+        var newAuthor = new Author(author.name());
+        var savedAuthor = repository.save(newAuthor);
+        return new AuthorDto(savedAuthor);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Author findById(Long id) {
-        return repository.findById(id)
+    public AuthorDto findById(Long id) {
+        var existingAuthor = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Author with id %s not found".formatted(id)));
+        return new AuthorDto(existingAuthor);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Author> findAll() {
-        return repository.findAll();
+    public List<AuthorDto> findAll() {
+        return repository.findAll().stream()
+                .map(AuthorDto::new)
+                .toList();
     }
 }

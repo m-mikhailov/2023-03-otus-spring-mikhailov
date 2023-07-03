@@ -3,8 +3,9 @@ package ru.mikhailov.otus.task7.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.mikhailov.otus.task7.domain.dto.GenreCreateDto;
 import ru.mikhailov.otus.task7.domain.dto.GenreDto;
-import ru.mikhailov.otus.task7.domain.error.EntityNotFoundException;
+import ru.mikhailov.otus.task7.domain.error.GenreNotFoundException;
 import ru.mikhailov.otus.task7.domain.model.Genre;
 import ru.mikhailov.otus.task7.repository.GenreRepository;
 
@@ -18,21 +19,26 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     @Transactional
-    public Genre save(GenreDto genre) {
-        var newGenre = new Genre(null, genre.name());
-        return repository.save(newGenre);
+    public GenreDto save(GenreCreateDto genre) {
+        var newGenre = new Genre(genre.name());
+        var savedGenre = repository.save(newGenre);
+        return new GenreDto(savedGenre);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Genre findById(Long id) {
+    public GenreDto findById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Genre with id %s not found".formatted(id)));
+                .map(GenreDto::new)
+                .orElseThrow(() -> new GenreNotFoundException(id));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Genre> findAll() {
-        return repository.findAll();
+    public List<GenreDto> findAll() {
+        return repository.findAll()
+                .stream()
+                .map(GenreDto::new)
+                .toList();
     }
 }

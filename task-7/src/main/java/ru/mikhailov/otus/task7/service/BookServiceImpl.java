@@ -3,11 +3,16 @@ package ru.mikhailov.otus.task7.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.mikhailov.otus.task7.domain.dto.BookCreateDto;
 import ru.mikhailov.otus.task7.domain.dto.BookDto;
-import ru.mikhailov.otus.task7.domain.dto.BookEntityDto;
-import ru.mikhailov.otus.task7.domain.error.EntityNotFoundException;
+import ru.mikhailov.otus.task7.domain.dto.BookUpdateDto;
+import ru.mikhailov.otus.task7.domain.error.AuthorNotFoundException;
+import ru.mikhailov.otus.task7.domain.error.BookNotFoundException;
+import ru.mikhailov.otus.task7.domain.error.GenreNotFoundException;
 import ru.mikhailov.otus.task7.domain.model.Book;
+import ru.mikhailov.otus.task7.repository.AuthorRepository;
 import ru.mikhailov.otus.task7.repository.BookRepository;
+import ru.mikhailov.otus.task7.repository.GenreRepository;
 
 import java.util.List;
 import java.util.Objects;
@@ -18,17 +23,19 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
 
-    private final AuthorService authorService;
+    private final AuthorRepository authorRepository;
 
-    private final GenreService genreService;
+    private final GenreRepository genreRepository;
 
     @Override
     @Transactional
-    public BookEntityDto save(BookDto book) {
-        var author = authorService.findById(book.authorId());
-        var genre = genreService.findById(book.genreId());
+    public BookDto save(BookCreateDto book) {
+        var author = authorRepository.findById(book.authorId())
+                .orElseThrow(() -> new AuthorNotFoundException(book.authorId()));
+        var genre = genreRepository.findById(book.genreId())
+                .orElseThrow(() -> new GenreNotFoundException(book.genreId()));
+
         var newBook = new Book(
-                book.id(),
                 book.name(),
                 author,
                 genre
@@ -36,51 +43,48 @@ public class BookServiceImpl implements BookService {
 
         var savedBook = bookRepository.save(newBook);
 
-        return new BookEntityDto(savedBook);
+        return new BookDto(savedBook);
     }
 
     @Override
     @Transactional
-    public void update(BookDto book) {
-        var existingBook = findById(book.id());
-        var newBook = new Book(
-                existingBook.id(),
-                existingBook.name(),
-                existingBook.author(),
-                existingBook.genre()
-        );
+    public void update(BookUpdateDto bookDto) {
+        var book = bookRepository.findById(bookDto.id())
+                .orElseThrow(() -> new BookNotFoundException(bookDto.id()));
 
-        if (Objects.nonNull(book.name())) {
-            newBook.setName(book.name());
+        if (Objects.nonNull(bookDto.name())) {
+            book.setName(bookDto.name());
         }
 
-        if (Objects.nonNull(book.authorId())) {
-            var author = authorService.findById(book.authorId());
+        if (Objects.nonNull(bookDto.authorId())) {
+            var author = authorRepository.findById(bookDto.authorId())
+                    .orElseThrow(() -> new AuthorNotFoundException(bookDto.authorId()));
 
-            newBook.setAuthor(author);
+            book.setAuthor(author);
         }
 
-        if (Objects.nonNull(book.genreId())) {
-            var genre = genreService.findById(book.genreId());
-            newBook.setGenre(genre);
+        if (Objects.nonNull(bookDto.genreId())) {
+            var genre = genreRepository.findById(bookDto.genreId())
+                    .orElseThrow(() -> new GenreNotFoundException(bookDto.genreId()));
+            book.setGenre(genre);
         }
 
-        bookRepository.save(newBook);
+        bookRepository.save(book);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public BookEntityDto findById(Long id) {
-        var book = bookRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Book with id %s not found".formatted(id)));
-        return new BookEntityDto(book);
+    public BookDto findById(Long id) {
+        return bookRepository.findById(id)
+                .map(BookDto::new)
+                .orElseThrow(() -> new BookNotFoundException(id));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookEntityDto> findAll() {
+    public List<BookDto> findAll() {
         return bookRepository.findAll().stream()
-                .map(BookEntityDto::new)
+                .map(BookDto::new)
                 .toList();
     }
 

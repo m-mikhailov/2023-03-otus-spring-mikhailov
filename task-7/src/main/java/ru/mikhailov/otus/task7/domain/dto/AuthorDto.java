@@ -1,4 +1,14 @@
 package ru.mikhailov.otus.task7.domain.dto;
 
-public record AuthorDto(String name) {
+import ru.mikhailov.otus.task7.domain.model.Author;
+
+public record AuthorDto(
+        Long id,
+        String name
+) {
+
+    public AuthorDto(Author author) {
+        this(author.getId(), author.getName());
+    }
+
 }

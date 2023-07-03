@@ -44,6 +44,15 @@ public class AuthorRepositoryTests {
                 .contains(expectedAuthor);
     }
 
+    @DisplayName("Should return empty optional")
+    @Test
+    public void shouldReturnEmptyOptional() {
+        var actual = repository.findById(10L);
+
+        assertThat(actual)
+                .isNotPresent();
+    }
+
     @DisplayName("Should save new author")
     @Test
     public void shouldSaveNewAuthor() {

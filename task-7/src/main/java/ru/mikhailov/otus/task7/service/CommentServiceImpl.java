@@ -3,10 +3,13 @@ package ru.mikhailov.otus.task7.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.mikhailov.otus.task7.domain.dto.CommentCreateDto;
 import ru.mikhailov.otus.task7.domain.dto.CommentDto;
-import ru.mikhailov.otus.task7.domain.error.EntityNotFoundException;
-import ru.mikhailov.otus.task7.domain.model.Book;
+import ru.mikhailov.otus.task7.domain.dto.CommentUpdateDto;
+import ru.mikhailov.otus.task7.domain.error.BookNotFoundException;
+import ru.mikhailov.otus.task7.domain.error.CommentNotFoundException;
 import ru.mikhailov.otus.task7.domain.model.Comment;
+import ru.mikhailov.otus.task7.repository.BookRepository;
 import ru.mikhailov.otus.task7.repository.CommentRepository;
 
 import java.util.List;
@@ -15,39 +18,46 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
-    private final CommentRepository repository;
+    private final CommentRepository commentRepository;
+
+    private final BookRepository bookRepository;
 
     @Override
     @Transactional
-    public void update(Comment comment) {
-        var existingComment = repository.findById(comment.getId())
-                        .orElseThrow(() -> new EntityNotFoundException("Comment with id %s not found".formatted(comment.getId())));
-        var newComment = new Comment(
-                existingComment.getId(),
-                comment.getText(),
-                existingComment.getBook()
-        );
+    public void update(CommentUpdateDto commentDto) {
+        var comment = commentRepository.findById(commentDto.id())
+                .orElseThrow(() -> new CommentNotFoundException(commentDto.id()));
 
-        repository.save(newComment);
+        comment.setText(comment.getText());
+
+        commentRepository.save(comment);
     }
 
     @Override
     @Transactional
     public void deleteById(Long id) {
-        repository.deleteById(id);
+        commentRepository.deleteById(id);
     }
 
     @Override
     @Transactional
-    public Comment add(CommentDto comment) {
-        var newComment = new Comment(null, comment.text(), new Book(comment.bookId(), null, null, null));
-        return repository.save(newComment);
+    public CommentDto add(CommentCreateDto comment) {
+        return bookRepository.findById(comment.bookId())
+                .map(book -> new Comment(comment.text(), book))
+                .map(commentRepository::save)
+                .map(CommentDto::new)
+                .orElseThrow(() -> new BookNotFoundException(comment.bookId()));
     }
 
     @Override
-    @Transactional
-    public List<Comment> findAllByBookId(Long bookId) {
-        return repository.findAllByBookId(bookId);
+    @Transactional(readOnly = true)
+    public List<CommentDto> findAllByBookId(Long bookId) {
+        return bookRepository.findById(bookId)
+                .map(book -> commentRepository.findAllByBookId(bookId))
+                .orElseThrow(() -> new BookNotFoundException(bookId))
+                .stream()
+                .map(CommentDto::new)
+                .toList();
     }
 
 }

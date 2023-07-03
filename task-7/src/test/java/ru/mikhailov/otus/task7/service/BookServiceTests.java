@@ -1,17 +1,19 @@
 package ru.mikhailov.otus.task7.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import ru.mikhailov.otus.task7.domain.dto.BookCreateDto;
 import ru.mikhailov.otus.task7.domain.dto.BookDto;
-import ru.mikhailov.otus.task7.domain.dto.BookEntityDto;
+import ru.mikhailov.otus.task7.domain.dto.BookUpdateDto;
 import ru.mikhailov.otus.task7.domain.model.Author;
 import ru.mikhailov.otus.task7.domain.model.Book;
 import ru.mikhailov.otus.task7.domain.model.Genre;
+import ru.mikhailov.otus.task7.repository.AuthorRepository;
 import ru.mikhailov.otus.task7.repository.BookRepository;
+import ru.mikhailov.otus.task7.repository.GenreRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,16 +38,16 @@ public class BookServiceTests {
 
     private static final Long EXISTING_BOOK_ID = 1L;
 
+    private static final Author EXISTING_AUTHOR = new Author(EXISTING_AUTHOR_ID, "Пушкин");
+
+    private static final Genre EXISTING_GENRE = new Genre(EXISTING_GENRE_ID, "Роман");
+
     private static final Book EXISTING_BOOK = new Book(
             EXISTING_BOOK_ID,
             "Капитанская дочка",
-            new Author(EXISTING_AUTHOR_ID, "Пушкин"),
-            new Genre(EXISTING_GENRE_ID, "Роман")
+            EXISTING_AUTHOR,
+            EXISTING_GENRE
     );
-
-    private static final Author EXISTING_AUTHOR = new Author(1L, "Пушкин");
-
-    private static final Genre EXISTING_GENRE = new Genre(1L, "Роман");
 
     @Autowired
     private BookService bookService;
@@ -54,37 +56,31 @@ public class BookServiceTests {
     private BookRepository bookRepository;
 
     @MockBean
-    private AuthorService authorService;
+    private AuthorRepository authorRepository;
 
     @MockBean
-    private GenreService genreService;
-
-    @BeforeEach
-    public void setUp() {
-        given(bookRepository.findById(EXISTING_BOOK_ID))
-                .willReturn(Optional.of(EXISTING_BOOK));
-    }
+    private GenreRepository genreRepository;
 
     @DisplayName("Should save new book")
     @Test
     public void shouldSaveNewBook() {
 
-        given(authorService.findById(EXISTING_AUTHOR_ID))
-                .willReturn(EXISTING_AUTHOR);
+        given(authorRepository.findById(EXISTING_AUTHOR_ID))
+                .willReturn(Optional.of(EXISTING_AUTHOR));
 
-        given(genreService.findById(EXISTING_GENRE_ID))
-                .willReturn(EXISTING_GENRE);
+        given(genreRepository.findById(EXISTING_GENRE_ID))
+                .willReturn(Optional.of(EXISTING_GENRE));
 
         var newBook = new Book(2L, "Дубровский", EXISTING_AUTHOR, EXISTING_GENRE);
 
         given(bookRepository.save(any(Book.class)))
                 .willReturn(newBook);
 
-        var bookDto = new BookDto(null, "Дубровский", EXISTING_AUTHOR_ID, EXISTING_GENRE_ID);
+        var bookDto = new BookCreateDto("Дубровский", EXISTING_AUTHOR_ID, EXISTING_GENRE_ID);
 
         var actualBook = bookService.save(bookDto);
 
-        var expectedBook = new BookEntityDto(newBook);
+        var expectedBook = new BookDto(newBook);
 
         assertThat(actualBook)
                 .isNotNull()
@@ -95,7 +91,10 @@ public class BookServiceTests {
     @Test
     public void shouldUpdateBookName() {
 
-        var bookDto = new BookDto(EXISTING_BOOK_ID, "Дубровский", null, null);
+        given(bookRepository.findById(EXISTING_BOOK_ID))
+                .willReturn(Optional.of(new Book(EXISTING_BOOK_ID, "Капитанская дочка", EXISTING_AUTHOR, EXISTING_GENRE)));
+
+        var bookDto = new BookUpdateDto(EXISTING_BOOK_ID, "Дубровский", null, null);
 
         bookService.update(bookDto);
 
@@ -109,13 +108,16 @@ public class BookServiceTests {
     @Test
     public void shouldUpdateBookAuthor() {
 
+        given(bookRepository.findById(EXISTING_BOOK_ID))
+                .willReturn(Optional.of(new Book(EXISTING_BOOK_ID, "Капитанская дочка", EXISTING_AUTHOR, EXISTING_GENRE)));
+
         var newAuthor = new Author(2L, "Достоевский");
 
-        given(authorService.findById(newAuthor.getId()))
-                .willReturn(newAuthor);
+        given(authorRepository.findById(newAuthor.getId()))
+                .willReturn(Optional.of(newAuthor));
 
 
-        var bookDto = new BookDto(EXISTING_BOOK_ID, null, newAuthor.getId(), null);
+        var bookDto = new BookUpdateDto(EXISTING_BOOK_ID, null, newAuthor.getId(), null);
 
         bookService.update(bookDto);
 
@@ -128,12 +130,15 @@ public class BookServiceTests {
     @Test
     public void shouldUpdateBookGenre() {
 
+        given(bookRepository.findById(EXISTING_BOOK_ID))
+                .willReturn(Optional.of(new Book(EXISTING_BOOK_ID, "Капитанская дочка", EXISTING_AUTHOR, EXISTING_GENRE)));
+
         var newGenre = new Genre(2L, "Стихотворение");
 
-        given(genreService.findById(newGenre.getId()))
-                .willReturn(newGenre);
+        given(genreRepository.findById(newGenre.getId()))
+                .willReturn(Optional.of(newGenre));
 
-        var bookDto = new BookDto(EXISTING_BOOK_ID, null, null, newGenre.getId());
+        var bookDto = new BookUpdateDto(EXISTING_BOOK_ID, null, null, newGenre.getId());
 
         bookService.update(bookDto);
 
@@ -146,9 +151,12 @@ public class BookServiceTests {
     @Test
     public void shouldReturnExistingBookById() {
 
+        given(bookRepository.findById(EXISTING_BOOK_ID))
+                .willReturn(Optional.of(EXISTING_BOOK));
+
         var actualBook = bookService.findById(EXISTING_BOOK_ID);
 
-        var expectedBook = new BookEntityDto(EXISTING_BOOK);
+        var expectedBook = new BookDto(EXISTING_BOOK);
 
         assertThat(actualBook)
                 .isNotNull()

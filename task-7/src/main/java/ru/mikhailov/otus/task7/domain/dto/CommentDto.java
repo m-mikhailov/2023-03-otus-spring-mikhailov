@@ -1,7 +1,13 @@
 package ru.mikhailov.otus.task7.domain.dto;
 
+import ru.mikhailov.otus.task7.domain.model.Comment;
+
 public record CommentDto(
-        String text,
-        Long bookId
+        Long id,
+        String text
 ) {
+
+    public CommentDto(Comment comment) {
+        this(comment.getId(), comment.getText());
+    }
 }

@@ -26,4 +26,13 @@ public class Book {
     @JoinColumn(name = "genre_id")
     private Genre genre;
 
+    public Book(String name, Author author, Genre genre) {
+        this.name = name;
+        this.author = author;
+        this.genre = genre;
+    }
+
+    public Book(Long id) {
+        this.id = id;
+    }
 }

@@ -5,8 +5,8 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.mikhailov.otus.task7.converter.ModelConverter;
+import ru.mikhailov.otus.task7.domain.dto.GenreCreateDto;
 import ru.mikhailov.otus.task7.domain.dto.GenreDto;
-import ru.mikhailov.otus.task7.domain.model.Genre;
 import ru.mikhailov.otus.task7.service.GenreService;
 
 @ShellComponent
@@ -15,7 +15,7 @@ public class GenresShellCommands {
 
     private final GenreService service;
 
-    private final ModelConverter<Genre> modelConverter;
+    private final ModelConverter<GenreDto> modelConverter;
 
     @ShellMethod("Show genres")
     public String genres(@ShellOption(defaultValue = "0") Long id) {
@@ -28,7 +28,7 @@ public class GenresShellCommands {
 
     @ShellMethod(value = "Create new genre", key = "genres create")
     public String createGenre(String name) {
-        var savedGenre = service.save(new GenreDto(name));
+        var savedGenre = service.save(new GenreCreateDto(name));
 
         return modelConverter.modelToString(savedGenre);
     }
