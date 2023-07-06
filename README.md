@@ -32,3 +32,7 @@ Books library. Using Spring JDBC.
 ### task-6
 
 Books library. Using Spring JPA.
+
+### task-7
+
+Books library. Using Spring Data Repository.
