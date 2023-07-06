@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mikhailov.otus.task7.domain.dto.GenreCreateDto;
 import ru.mikhailov.otus.task7.domain.dto.GenreDto;
-import ru.mikhailov.otus.task7.domain.error.GenreNotFoundException;
+import ru.mikhailov.otus.task7.domain.error.EntityNotFoundException;
 import ru.mikhailov.otus.task7.domain.model.Genre;
 import ru.mikhailov.otus.task7.repository.GenreRepository;
 
@@ -30,7 +30,7 @@ public class GenreServiceImpl implements GenreService {
     public GenreDto findById(Long id) {
         return repository.findById(id)
                 .map(GenreDto::new)
-                .orElseThrow(() -> new GenreNotFoundException(id));
+                .orElseThrow(() -> new EntityNotFoundException(EntityNotFoundException.GENRE_MESSAGE_FORMAT, id));
     }
 
     @Override

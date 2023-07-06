@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mikhailov.otus.task7.domain.dto.AuthorCreateDto;
 import ru.mikhailov.otus.task7.domain.dto.AuthorDto;
-import ru.mikhailov.otus.task7.domain.error.AuthorNotFoundException;
 import ru.mikhailov.otus.task7.domain.error.EntityNotFoundException;
 import ru.mikhailov.otus.task7.domain.model.Author;
 import ru.mikhailov.otus.task7.repository.AuthorRepository;
@@ -30,7 +29,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional(readOnly = true)
     public AuthorDto findById(Long id) {
         var existingAuthor = repository.findById(id)
-                .orElseThrow(() -> new AuthorNotFoundException(id));
+                .orElseThrow(() -> new EntityNotFoundException(EntityNotFoundException.AUTHOR_MESSAGE_FORMAT, id));
         return new AuthorDto(existingAuthor);
     }
 

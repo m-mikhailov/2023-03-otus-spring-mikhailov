@@ -6,8 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.mikhailov.otus.task7.domain.dto.CommentCreateDto;
 import ru.mikhailov.otus.task7.domain.dto.CommentDto;
 import ru.mikhailov.otus.task7.domain.dto.CommentUpdateDto;
-import ru.mikhailov.otus.task7.domain.error.BookNotFoundException;
-import ru.mikhailov.otus.task7.domain.error.CommentNotFoundException;
+import ru.mikhailov.otus.task7.domain.error.EntityNotFoundException;
 import ru.mikhailov.otus.task7.domain.model.Comment;
 import ru.mikhailov.otus.task7.repository.BookRepository;
 import ru.mikhailov.otus.task7.repository.CommentRepository;
@@ -26,7 +25,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public void update(CommentUpdateDto commentDto) {
         var comment = commentRepository.findById(commentDto.id())
-                .orElseThrow(() -> new CommentNotFoundException(commentDto.id()));
+                .orElseThrow(() -> new EntityNotFoundException(EntityNotFoundException.COMMENT_MESSAGE_FORMAT, commentDto.id()));
 
         comment.setText(comment.getText());
 
@@ -46,7 +45,7 @@ public class CommentServiceImpl implements CommentService {
                 .map(book -> new Comment(comment.text(), book))
                 .map(commentRepository::save)
                 .map(CommentDto::new)
-                .orElseThrow(() -> new BookNotFoundException(comment.bookId()));
+                .orElseThrow(() -> new EntityNotFoundException(EntityNotFoundException.BOOK_MESSAGE_FORMAT, comment.bookId()));
     }
 
     @Override
@@ -54,7 +53,7 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentDto> findAllByBookId(Long bookId) {
         return bookRepository.findById(bookId)
                 .map(book -> commentRepository.findAllByBookId(bookId))
-                .orElseThrow(() -> new BookNotFoundException(bookId))
+                .orElseThrow(() -> new EntityNotFoundException(EntityNotFoundException.BOOK_MESSAGE_FORMAT, bookId))
                 .stream()
                 .map(CommentDto::new)
                 .toList();
