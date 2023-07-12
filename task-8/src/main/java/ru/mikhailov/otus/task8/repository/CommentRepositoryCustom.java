@@ -8,4 +8,6 @@ public interface CommentRepositoryCustom {
 
     List<Comment> findAllByBookId(String bookId);
 
+    void deleteAllByBookId(String bookId);
+
 }

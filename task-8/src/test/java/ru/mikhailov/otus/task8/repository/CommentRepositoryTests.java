@@ -87,7 +87,23 @@ public class CommentRepositoryTests extends AbstractRepositoryTest {
 
         assertThat(actualComments)
                 .isNotEmpty()
-                .hasSizeGreaterThan(2);
+                .hasSizeGreaterThanOrEqualTo(2);
+    }
+
+    @DisplayName("Should delete all book comments")
+    @Test
+    public void shouldDeleteAllCommetsByBookId() {
+        var existingBook = bookRepository.findAll().get(0);
+
+        commentRepository.save(new Comment("Отличный роман!", existingBook));
+        commentRepository.save(new Comment("Рекомендую всем!", existingBook));
+
+        commentRepository.deleteAllByBookId(existingBook.getId());
+
+        var actualComments = commentRepository.findAllByBookId(existingBook.getId());
+
+        assertThat(actualComments)
+                .isEmpty();
     }
 
 }

@@ -18,8 +18,7 @@ public class MongoBookCascadeDeleteEventListener extends AbstractMongoEventListe
         super.onAfterDelete(event);
         var source = event.getSource();
         var id = source.get("_id").toString();
-        var comments = repository.findAllByBookId(id);
-        repository.deleteAll(comments);
+        repository.deleteAllByBookId(id);
     }
 
 }
