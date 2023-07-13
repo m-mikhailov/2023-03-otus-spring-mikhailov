@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book comments</title>
+    <style>
+      .container {
+        border: 2px solid #dedede;
+        background-color: #f1f1f1;
+        border-radius: 5px;
+        padding: 5px;
+        margin: 10px 10px;
+        width: 300px;
+      }
+      .row {
+        padding: 5px;
+        margin: 10px 10px;
+        width: 300px;
+      }
+      .del-right {
+        float: right;
+        color: #aaa;
+      }
+    </style>
+</head>
+<body>
+<div class="container" th:each="comment : ${comments}">
+  <a class="del-right" href="list.html" th:href="@{/comments/delete/{id}(id=${comment.id},bookId=${bookId})}">X</a>
+  <p th:text="${comment.text}">Book comment</p>
+</div>
+<form id="add-form" action="add.html" th:method="post" th:action="@{/comments}">
+  <input type="hidden" id="comment-book-id" name="bookId" th:value="${bookId}"/>
+  <div class="row">
+    <input id="comment-text-input" name="text" type="text" placeholder="comment.."/>
+    <button type="submit">Add</button>
+  </div>
+</form>
+</body>
+</html>
