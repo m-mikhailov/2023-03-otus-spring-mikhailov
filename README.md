@@ -44,3 +44,7 @@ Books library. Using Mongo DB.
 # task-9
 
 Books library. Using Spring MVC & Thymeleaf.
+
+# task-10
+
+Books library. Using Rest Controller.
