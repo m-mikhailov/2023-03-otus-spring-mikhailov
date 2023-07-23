@@ -96,6 +96,28 @@ public class BooksControllerTests {
     }
 
     @Test
+    @DisplayName("Empty book name, should return bad request status")
+    public void shouldReturnBadRequestStatus_emptyBookName() throws Exception {
+        var bookCreateDto = new BookCreateDto("", 1L, 1L);
+
+        mvc.perform(post("/books")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(bookCreateDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("AuthorId is null, should return bad request status")
+    public void shouldReturnBadRequestStatus_authorIdIsNull() throws Exception {
+        var bookCreateDto = new BookCreateDto("Капитанская дочка", null, 1L);
+
+        mvc.perform(post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(bookCreateDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     @DisplayName("Should delete book")
     public void shouldDeleteBook() throws Exception {
         mvc.perform(delete("/books/{id}", "1"))
