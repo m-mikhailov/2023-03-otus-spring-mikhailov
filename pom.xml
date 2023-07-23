@@ -30,6 +30,7 @@
         <module>task-7</module>
         <module>task-8</module>
         <module>task-9</module>
+        <module>task-10</module>
     </modules>
 
     <dependencies>
